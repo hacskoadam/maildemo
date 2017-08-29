@@ -64,7 +64,16 @@ namespace demo.Models
 
     public class RegisterViewModel
     {
-        [Required]
+		[Required]
+		[Display(Name ="Username")]
+		[RegularExpression(@"^[a-zA-Z0-9]+$", ErrorMessage = "please type a new user name with a mixture of alphanumeric characters.")]
+		public string Username { get; set; }
+
+		[Required]
+		[Display(Name = "Full name")]
+		public string FullName { get; set; }
+
+		[Required]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
@@ -79,7 +88,10 @@ namespace demo.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
-    }
+
+		[Display(Name = "Phone number")]
+		public string PhoneNumber { get; set; }
+	}
 
     public class ResetPasswordViewModel
     {

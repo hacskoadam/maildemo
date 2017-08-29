@@ -16,6 +16,10 @@ namespace demo.Models
             // Add custom user claims here
             return userIdentity;
         }
+		public string FullName { get; set; }
+
+		[System.ComponentModel.DefaultValue(false)]
+		public bool hidden { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
