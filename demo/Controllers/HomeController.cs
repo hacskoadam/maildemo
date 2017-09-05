@@ -1,4 +1,5 @@
-﻿using System;
+﻿using demo.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,6 +11,9 @@ namespace demo.Controllers
 	{
 		public ActionResult Index()
 		{
+			var userContext = new ApplicationDbContext();
+
+			ViewData["Users"] = userContext.Users.Where(w => w.Hidden == false).ToList();
 			return View();
 		}
 

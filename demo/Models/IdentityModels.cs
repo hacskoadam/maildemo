@@ -19,7 +19,7 @@ namespace demo.Models
 		public string FullName { get; set; }
 
 		[System.ComponentModel.DefaultValue(false)]
-		public bool hidden { get; set; }
+		public bool Hidden { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -33,5 +33,7 @@ namespace demo.Models
         {
             return new ApplicationDbContext();
         }
-    }
+
+		//public System.Data.Entity.DbSet<demo.Models.ApplicationUser> ApplicationUsers { get; set; }
+	}
 }
