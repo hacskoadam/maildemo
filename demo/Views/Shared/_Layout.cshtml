@@ -4,12 +4,17 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Simple mail</title>
+	<title>@ViewBag.Title - Simple mail</title>
 	@Styles.Render("~/Content/css")
 	@Styles.Render("~/Content/font-awesome")
 
 </head>
 <body>
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+	@Scripts.Render("~/bundles/scrollbar")
+	@Scripts.Render("~/bundles/notify")
+	@RenderSection("scripts", required: false)
 	
 	<div class="header">
 		<a href="#" id="menu-action" class="active">
@@ -58,10 +63,7 @@
 		@RenderBody()
 	</div>
 
-	@Scripts.Render("~/bundles/jquery")
-	@Scripts.Render("~/bundles/bootstrap")
-	@Scripts.Render("~/bundles/scrollbar")
-	@RenderSection("scripts", required: false)
+
 	<script type="text/javascript">
 			$('#menu-action').click(function() {
 				$('.sidebar').toggleClass('active');

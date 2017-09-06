@@ -20,6 +20,8 @@ namespace demo.Models
 
 		[System.ComponentModel.DefaultValue(false)]
 		public bool Hidden { get; set; }
+		public int DailyMailsMax { get; set; }
+
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>

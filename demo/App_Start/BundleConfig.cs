@@ -34,6 +34,8 @@ namespace demo
 
 			bundles.Add(new ScriptBundle("~/bundles/scrollbar").Include(
 				  "~/Scripts/jquery.scrollbar.js"));
+			bundles.Add(new ScriptBundle("~/bundles/notify").Include(
+				  "~/Scripts/notify.js"));
 
 
 		}

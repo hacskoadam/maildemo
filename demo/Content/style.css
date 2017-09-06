@@ -378,10 +378,10 @@ a.open_mail_back_link{
 #send_new_mail{
 	float:right;
 	position:relative;
-	top:-36px;
+	top:-40px;
 }
 .send_mail_input{
-	width:90%;
+	width:80%;
 	max-width:90%;
 	border: 0px;
 	background-color: transparent;
@@ -389,4 +389,8 @@ a.open_mail_back_link{
 }
 .send_mail_input:focus{
 	outline: none;
+}
+textarea.send_mail_input {
+	height: 400px;
+	width: 100%;
 }
