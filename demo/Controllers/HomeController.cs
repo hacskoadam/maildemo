@@ -7,20 +7,16 @@ using System.Web.Mvc;
 
 namespace demo.Controllers
 {
-	public class HomeController : Controller
+	[Authorize]
+	public class HomeController : BaseController
 	{
 		public ActionResult Index()
 		{
-			var userContext = new ApplicationDbContext();
-
-			ViewData["Users"] = userContext.Users.Where(w => w.Hidden == false).ToList();
 			return View();
 		}
 
-		public ActionResult About()
+		public ActionResult SendMail(string id = "")
 		{
-			ViewBag.Message = "Your application description page.";
-
 			return View();
 		}
 

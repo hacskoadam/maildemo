@@ -364,3 +364,29 @@ a.open_mail_back_link{
 .header .logo .navbar-right{
 	margin-right:20px;
 }
+.user_list_filter li{
+	padding-bottom:10px;
+}
+.sidebar ul li.user_item span {
+	line-height: 20px;
+}
+.sidebar ul.user_list_filter li span input{
+	height: 20px;
+	padding:12px 0px 24px 0px;
+	margin-bottom:15px;
+}
+#send_new_mail{
+	float:right;
+	position:relative;
+	top:-36px;
+}
+.send_mail_input{
+	width:90%;
+	max-width:90%;
+	border: 0px;
+	background-color: transparent;
+	padding-left:15px;
+}
+.send_mail_input:focus{
+	outline: none;
+}
