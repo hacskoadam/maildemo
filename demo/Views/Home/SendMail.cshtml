@@ -1,7 +1,7 @@
 ﻿@model demo.Models.Message
 
 @{
-	ViewBag.Title = "Sompose";
+	ViewBag.Title = "Compose";
 }
 
 @using (Html.BeginForm())
@@ -14,7 +14,7 @@
 				@Html.LabelFor(model => model.To, htmlAttributes: new { @class = "control-label" }): 
 				@if (ViewData["MailTo"] != null)
 				{
-					@Html.TextBoxFor(model => model.To, new { @Value = ViewData["MailTo"], @class = "send_mail_input" })
+					@Html.TextBoxFor(model => model.To, new { @Value = ViewData["MailTo"], @class = "send_mail_input", @readonly = "readonly" })
 
 				} else
 				{

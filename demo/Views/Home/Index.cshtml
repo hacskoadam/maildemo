@@ -3,7 +3,7 @@
 
 @{ 
 	ViewBag.Title = "Inbox";
-	var users = (List<ApplicationUser>)ViewData["Users"];
+	var users = (List<ApplicationUser>)ViewData["AllUsers"];
 }
 <div class="row">
 	<div class="col-md-4 col-xs-12 col-lg-3 nopadding inbox_col" style="position: fixed; height: 100% ">
@@ -11,9 +11,13 @@
 			<h1>Inbox</h1>
 		</div>
 		<div class=" jumbotron nomargin">
-			<input type="text" name="search" placeholder="Search inbox">
+			<input type="text" name="search" id="search_mail_list" placeholder="Search inbox">
 		</div>
 		<div class="inbox_list scrollbar-macosx">
+			@if (Model.Count() == 0)
+			{
+				<center><i><br />No messages yet :(</i></center>
+			}
 			@foreach (var item in Model)
 			{
 				<div data-message_id="@item.Id" class='message col-md-12 @(!item.IsReaded ? "unreaded": "" )'>
@@ -51,4 +55,18 @@
 
 	})
 
+</script>
+<script>
+		$('#search_mail_list').on('input propertychange paste', function () {
+			var stringToSerach = $(this).val().toLowerCase();
+
+			$('.message ').each(function (key, val) {
+				if ($(val).text().toLowerCase().indexOf(stringToSerach) != -1) {
+					$(val).show();
+				}
+				else {
+					$(val).hide();
+				}
+			})
+		});
 </script>

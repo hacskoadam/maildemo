@@ -214,8 +214,10 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\css\fontawesome-webfont.svg" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\fontawesome-webfont.svg" />
+    <Content Include="Content\jquery-ui.min.css" />
     <Content Include="Content\scrollbar.css" />
     <Content Include="Content\style.css" />
     <Content Include="favicon.ico" />
@@ -232,10 +234,17 @@
     <Content Include="Content\fontawesome-webfont.woff" />
     <Content Include="Content\fontawesome-webfont.woff2" />
     <Content Include="Content\FontAwesome.otf" />
+    <Content Include="Content\css\fontawesome-webfont.eot" />
+    <Content Include="Content\css\fontawesome-webfont.ttf" />
+    <Content Include="Content\css\fontawesome-webfont.woff" />
+    <Content Include="Content\css\fontawesome-webfont.woff2" />
+    <Content Include="Content\css\FontAwesome.otf" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery-ui.min.js" />
     <Content Include="Scripts\jquery.min.js" />
     <Content Include="Scripts\jquery.nicescroll.min.js" />
     <Content Include="Scripts\jquery.scrollbar.js" />
@@ -285,6 +294,8 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\SendMail.cshtml" />
     <Content Include="Views\Shared\DisplayMailDetails.cshtml" />
+    <Content Include="Views\Home\SentMails.cshtml" />
+    <Content Include="Views\Home\DisplayOwnMailDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

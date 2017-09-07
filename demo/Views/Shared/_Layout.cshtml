@@ -1,4 +1,5 @@
 ﻿@using demo.Models;
+@using Microsoft.AspNet.Identity;
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,6 +15,7 @@
 	@Scripts.Render("~/bundles/bootstrap")
 	@Scripts.Render("~/bundles/scrollbar")
 	@Scripts.Render("~/bundles/notify")
+	@Scripts.Render("~/bundles/jquery-ui")
 	@RenderSection("scripts", required: false)
 	
 	<div class="header">
@@ -28,11 +30,11 @@
 	</div>
 	<div class="sidebar active">
 		<ul>
-			<li><a href="#"><i class="fa fa-user"></i><span>Profile</span></a></li>
+			<li><a href="#" id="user_settings_button"><i class="fa fa-user"></i><span>Profile</span></a></li>
 		</ul>
 		<ul>
-			<li><a href="@Url.Action("index","Home")"><i class="fa fa-envelope"></i><span>Inbox</span></a></li>
-			<li><a href="#"><i class="fa fa-server"></i><span>Sent</span></a></li>
+			<li><a href="@Url.Action("index", "Home")"><i class="fa fa-envelope"></i><span>Inbox</span></a></li>
+			<li><a href="@Url.Action("SentMails", "Home")"><i class="fa fa-server"></i><span>Sent</span></a></li>
 			<li class="contacts top_border">
 				<a href="#" disabled><i class="fa fa-address-book"></i><span>Contats</span></a>
 			</li>
@@ -41,7 +43,7 @@
 			<li class="user_item"><a href="#" disabled>
 				<i class="fa"></i>
 				<span>
-					<input type="text" id="filter_user_list" placeholder="Seach user"/>
+					<input type="text" id="filter_user_list" placeholder="Search user"/>
 				</span></a></li>
 		</ul>
 		<ul class="user_list scrollbar-macosx">
@@ -51,7 +53,12 @@
 				{
 					foreach (var user in users_list)
 					{
-						<li class="user_item"><a href="@Url.Action("SendMail", "Home", new { id = user.UserName})" disabled><i class="fa"></i><span title="@{ @user.UserName}">@{ @user.FullName}</span></a></li>
+						<li class="user_item user_list_item">
+							<a href="@Url.Action("SendMail", "Home", new { id = user.UserName })" disabled>
+								<i class="fa"></i>
+								<span title="@{ @user.UserName}">@{ @user.FullName}</span>
+							</a>
+						</li>
 					}
 				}
 			}
@@ -62,7 +69,74 @@
 	<div class="main active">
 		@RenderBody()
 	</div>
+	<div id="user_settings" style="width:0px;">
+		<div class="inner">
+			<p id="close_user_settings"><i class="fa fa-times" aria-hidden="true"></i> &nbsp;Close</p>
+			<h3>Profile Settings</h3>
+			@{
+				var username = User.Identity.GetUserName();
+				var user_lst = (List<ApplicationUser>)ViewData["AllUsers"];
+				if (user_lst != null)
+				{
+					var curent_user = user_lst.Where(w => w.UserName == username).FirstOrDefault();
+					if (curent_user != null)
+					{
+						var hidden = curent_user.Hidden;
+					<label>
+						<input type="checkbox" value="1" class="hide_user_checkbox"  @(!hidden ? "checked" : "") />
+						&nbsp;Visible for other users
+					</label>
+						}
+					}
+				}
+		</div>
+</div>
 
+	<script>
+		$('#filter_user_list').on('input propertychange paste', function () {
+			var stringToSerach = $(this).val().toLowerCase();
+
+			$('.user_list_item').each(function (key, val) {
+				if ($(val).children("a").children("span").text().toLowerCase().indexOf(stringToSerach) != -1) {
+					$(val).show();
+				}
+				else {
+					$(val).hide();
+				}
+			})
+		});
+	</script>
+
+	<script>
+		$("p#close_user_settings").click(function () {
+			$("#user_settings").animate({ width: 0 }, { duration: 300 });
+		})
+		var urlToHide = '@Url.Action("ToggleHideUser", "Home")';
+
+		$(".hide_user_checkbox").click(function () {
+			$.ajax({
+				url: urlToHide,
+				method: "POST",
+				success: function (result) {
+					if (result.status != "success") {
+						$.notify("Can not set visibility", "error");
+					}
+				}
+			});
+		});
+	</script>
+	<script type="text/javascript">
+		$("#user_settings_button").click(function () {
+			var sidenav = $("#user_settings");
+
+			if ($(sidenav).css("width") == "0px") {
+				$(sidenav).animate({ width: 250}, { duration: 300 });
+			}
+			else {
+				$(sidenav).animate({ width: 0 }, { duration: 300 });
+			}
+		})
+	</script>
 
 	<script type="text/javascript">
 			$('#menu-action').click(function() {

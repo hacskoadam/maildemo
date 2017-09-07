@@ -1,0 +1,23 @@
+﻿
+@model demo.Models.Message
+@using demo.Models
+
+@{
+
+	var users = (List<ApplicationUser>)ViewData["Users"];
+	ApplicationUser sender = @users.Where(w => w.UserName == Model.From).FirstOrDefault();
+}
+
+<div class="jumbotron nomargin">
+
+	<a href="#" title="Back" class="pull-left open_mail_back_link hidden-md hidden-lg"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+	<h1>
+		@Html.DisplayFor(model => model.Title)
+	</h1>
+</div>
+<div class=" jumbotron nomargin">
+	<h4>@sender.FullName <span class="pull-right">@Html.DisplayFor(model => model.SendDate)</span></h4>
+</div>
+<div class="open_mail_text">
+	@Html.DisplayFor(model => model.Body)
+</div>

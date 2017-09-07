@@ -121,6 +121,9 @@ p {
 .sidebar ul li.user_item span{
   height: 10px;
 }
+.sidebar ul li.user_item span {
+	height:40px;
+}
 .sidebar ul li.contacts ul li {
   text-align: left;
   margin-left: 60px;
@@ -365,15 +368,25 @@ a.open_mail_back_link{
 	margin-right:20px;
 }
 .user_list_filter li{
-	padding-bottom:10px;
+	padding-bottom:15px;
 }
 .sidebar ul li.user_item span {
 	line-height: 20px;
 }
-.sidebar ul.user_list_filter li span input{
-	height: 20px;
-	padding:12px 0px 24px 0px;
-	margin-bottom:15px;
+
+.sidebar ul.user_list_filter li span input::placeholder {
+	color: #fff;
+	font-style:italic;
+}
+
+
+.sidebar ul.user_list_filter li span input {
+	height: 40px;
+	padding: 12px 0px 4px 0px;
+	color: #fff;
+	background-color: transparent;
+	border: 0px;
+	border-bottom: solid 1px #fff;
 }
 #send_new_mail{
 	float:right;
@@ -387,10 +400,33 @@ a.open_mail_back_link{
 	background-color: transparent;
 	padding-left:15px;
 }
-.send_mail_input:focus{
+.sidebar ul.user_list_filter li span input ,
+.send_mail_input:focus {
 	outline: none;
 }
 textarea.send_mail_input {
 	height: 400px;
 	width: 100%;
+}
+div#user_settings {
+	z-index: 2;
+	height: 100%;
+	position: fixed;
+	top: 50px;
+	right: -10px;
+	background-color: #34393d;
+	overflow: hidden;
+	transition: 0.5s;
+	padding-top: 15px;
+	padding-bottom: 20px;
+	color: #999;
+}
+div#user_settings div.inner {
+	padding-left: 10px;
+}
+p#close_user_settings{
+	font-size:20px;
+	text-align: center;
+	color: #fff;
+	cursor:pointer;
 }

@@ -1,0 +1,57 @@
+﻿@model IEnumerable<demo.Models.Message>
+@using demo.Models;
+
+@{
+	ViewBag.Title = "Inbox";
+	var users = (List<ApplicationUser>)ViewData["Users"];
+}
+<div class="row">
+	<div class="col-md-4 col-xs-12 col-lg-3 nopadding inbox_col" style="position: fixed; height: 100% ">
+		<div class="jumbotron nomargin">
+			<h1>Inbox</h1>
+		</div>
+		<div class=" jumbotron nomargin">
+			<input type="text" name="search" placeholder="Search inbox">
+		</div>
+		<div class="inbox_list scrollbar-macosx">
+			@if (Model.Count() == 0)
+			{
+				<center><i><br />No messages yet :(</i></center>
+			}
+			@foreach (var item in Model)
+			{
+				<div data-message_id="@item.Id" class='message col-md-12'>
+					<div class="message_select">
+						<input type="checkbox" name="">
+					</div>
+					<div class="message_details">
+						<h3>
+							@{
+								ApplicationUser sender = @users.Where(w => w.UserName == item.From).FirstOrDefault();
+							}
+							@sender.FullName
+							<span class="pull-right">@item.SendDate</span>
+						</h3>
+						<p><b>@item.Title</b> &nbsp;@item.Body</p>
+					</div>
+
+				</div>
+			}
+
+		</div>
+	</div>
+	<div class="col-md-8 col-md-offset-4 col-lg-offset-3 col-xs-12 col-lg-7 nopadding open_mail" style="position: fixed; height: 100%">
+	</div>
+</div>
+<script>
+	var urlToDetails = '@Url.Action("DisplayOwnMailDetails", "Home")';
+	$('.message').click(function() {
+		var mid = $(this).data("message_id");
+		var that = $(this);
+		$('.open_mail').load(urlToDetails, { id: mid }, function (response, status) {
+			
+		});
+
+	})
+
+</script>

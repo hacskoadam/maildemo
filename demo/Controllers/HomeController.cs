@@ -33,8 +33,8 @@ namespace demo.Controllers
 		{
 
 
-			var user = userContext.Users.Where(w => w.UserName == Model.To).Count();
-			if ((int)ViewData["leftmailsCount"] > 0)
+			var user = userContext.Users.Where(w => w.UserName == Model.To).Count();//is valid user to send message
+			if (Leftmails > 0)
 			{
 				if (user == 1)
 				{
@@ -55,9 +55,6 @@ namespace demo.Controllers
 				ViewData["Error"] = "You reached the daily mail limit";
 				return View(Model);
 			}
-
-			ViewData["MailTo"] = Model.To;
-			return View(Model);
 		}
 
 		public ActionResult DisplayMailDetails(int id)
@@ -102,6 +99,42 @@ namespace demo.Controllers
 			ViewBag.Message = "Your contact page.";
 
 			return View();
+		}
+
+		public ActionResult SentMails()
+		{
+			string username = User.Identity.GetUserName();
+			var model = _db.Mails.Where(w => w.From == username).ToList();
+			return View(model);
+		}
+
+		public ActionResult DisplayOwnMailDetails(int id)
+		{
+			var model = _db.Mails.Find(id);
+			_db.SaveChanges();
+
+			return PartialView(model);
+		}
+
+		[HttpPost]
+		public JsonResult ToggleHideUser()
+		{
+			var userContext = new ApplicationDbContext();
+			var AppUser = userContext.Users.Where(w => w.UserName == LogedInUsername).FirstOrDefault();
+			if(AppUser != null)
+			{
+				AppUser.Hidden = !AppUser.Hidden;
+				userContext.SaveChanges();
+
+				return new JsonResult()
+				{
+					Data = new { status = "success" }
+				};
+			}
+			return new JsonResult()
+			{
+				Data = new { status = "error" }
+			};
 		}
 	}
 }

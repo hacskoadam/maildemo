@@ -10,6 +10,8 @@ namespace demo
 		{
 			bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
 						"~/Scripts/jquery.min.js"));
+			bundles.Add(new ScriptBundle("~/bundles/jquery-ui").Include(
+						"~/Scripts/jquery-ui.min.js"));
 
 			bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
 						"~/Scripts/jquery.validate*"));
@@ -27,7 +29,8 @@ namespace demo
 					  "~/Content/bootstrap.min.css",
 					  "~/Content/site.css",
 					  "~/Content/scrollbar.css",
-					  "~/Content/style.css"));
+					  "~/Content/style.css",
+					  "~/Content/jquery-ui.min.css"));
 
 			bundles.Add(new StyleBundle("~/Content/font-awesome").Include(
 					  "~/Content/font-awesome.css"));

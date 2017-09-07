@@ -13,21 +13,33 @@ namespace demo.Controllers
 		protected DemoDB _db = new DemoDB();
 
 		public List<ApplicationUser> model;
+		protected int Leftmails;
+		protected string LogedInUsername;
+
+		protected override void Initialize(System.Web.Routing.RequestContext requestContext)
+		{
+			base.Initialize(requestContext);
+
+			// Now you can access the HttpContext and User
+			var userContext = new ApplicationDbContext();
+			ViewData["Users"] = userContext.Users.Where(w => w.Hidden == false).ToList();
+			ViewData["AllUsers"] = userContext.Users.ToList();
+
+			if (User.Identity.IsAuthenticated)
+			{
+				
+				LogedInUsername = User.Identity.GetUserName();
+				var MaxMails = userContext.Users.Where(W => W.UserName == LogedInUsername).FirstOrDefault().DailyMailsMax;
+				int usedToday = _db.Mails.Where(w => w.From == LogedInUsername).Where(w => w.SendDate.Day >= DateTime.Today.Day && w.SendDate.Month >= DateTime.Today.Month && w.SendDate.Year >= DateTime.Today.Year).Count();
+
+				Leftmails = MaxMails - usedToday;
+				ViewData["leftmailsCount"] = Leftmails;
+			}
+		}
 
 		public BaseController()
 		{
-			var userContext = new ApplicationDbContext();
-			ViewData["Users"] = userContext.Users.Where(w => w.Hidden == false).ToList();
 
-			if (User != null)
-			{
-
-				var username = User.Identity.GetUserName();
-
-				var MaxMails = userContext.Users.Where(W => W.UserName == username).FirstOrDefault().DailyMailsMax;
-
-				ViewData["leftmailsCount"] = MaxMails - _db.Mails.Where(w => w.From == username && w.SendDate == DateTime.Today).Count();
-			}
 		}
-    }
+	}
 }
