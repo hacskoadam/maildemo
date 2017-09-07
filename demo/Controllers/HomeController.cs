@@ -31,23 +31,30 @@ namespace demo.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult SendMail(Message Model)
 		{
-			
-			
+
+
 			var user = userContext.Users.Where(w => w.UserName == Model.To).Count();
-			if(user == 1)
+			if ((int)ViewData["leftmailsCount"] > 0)
 			{
-				Model.From = User.Identity.GetUserName();
-				Model.SendDate = DateTime.Now;
-				_db.Mails.Add(Model);
-				_db.SaveChanges();
-				return RedirectToAction("index");
+				if (user == 1)
+				{
+					Model.From = User.Identity.GetUserName();
+					Model.SendDate = DateTime.Now;
+					_db.Mails.Add(Model);
+					_db.SaveChanges();
+					return RedirectToAction("index");
+				}
+				else
+				{
+					ViewData["Error"] = "Invalid username";
+					return View(Model);
+				}
 			}
 			else
 			{
-				ViewData["Error"] = "Invalid username";
+				ViewData["Error"] = "You reached the daily mail limit";
 				return View(Model);
 			}
-
 
 			ViewData["MailTo"] = Model.To;
 			return View(Model);

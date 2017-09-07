@@ -36,7 +36,8 @@ namespace demo.Migrations
                     {
                         Id = c.String(nullable: false, maxLength: 128),
                         FullName = c.String(),
-                        hidden = c.Boolean(nullable: false),
+                        Hidden = c.Boolean(nullable: false),
+                        DailyMailsMax = c.Int(nullable: false),
                         Email = c.String(maxLength: 256),
                         EmailConfirmed = c.Boolean(nullable: false),
                         PasswordHash = c.String(),

@@ -18,11 +18,16 @@ namespace demo.Controllers
 		{
 			var userContext = new ApplicationDbContext();
 			ViewData["Users"] = userContext.Users.Where(w => w.Hidden == false).ToList();
-			var username = User.Identity.GetUserName();
 
-			var MaxMails = userContext.Users.Where(W => W.UserName == username).FirstOrDefault().DailyMailsMax;
+			if (User != null)
+			{
 
-			ViewData["leftmails"] = MaxMails - _db.Mails.Where(w => w.From == username && w.SendDate == DateTime.Today).Count();
+				var username = User.Identity.GetUserName();
+
+				var MaxMails = userContext.Users.Where(W => W.UserName == username).FirstOrDefault().DailyMailsMax;
+
+				ViewData["leftmailsCount"] = MaxMails - _db.Mails.Where(w => w.From == username && w.SendDate == DateTime.Today).Count();
+			}
 		}
     }
 }
