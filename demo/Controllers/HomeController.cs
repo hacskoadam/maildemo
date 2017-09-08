@@ -18,7 +18,7 @@ namespace demo.Controllers
 		public ActionResult Index()
 		{
 			String username = User.Identity.GetUserName();
-			var model = _db.Mails.Where(w=>w.To == username).ToList();
+			var model = _db.Mails.Where(w => w.To == username).OrderByDescending(o => o.SendDate).ToList();
 			return View(model);
 		}
 
@@ -31,18 +31,34 @@ namespace demo.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult SendMail(Message Model)
 		{
+			string to = Model.To;
+			int firstBrace = Model.To.IndexOf("(");
+			int lastBrace = Model.To.IndexOf(")");
+			if (firstBrace != -1 && lastBrace != -1)
+			{
+				to = Model.To.Substring(firstBrace + 1, lastBrace - firstBrace - 1);
+			}
 
-
-			var user = userContext.Users.Where(w => w.UserName == Model.To).Count();//is valid user to send message
+			var user = userContext.Users.Where(w => w.UserName == to).Count();//is valid user to send message
 			if (Leftmails > 0)
 			{
 				if (user == 1)
 				{
-					Model.From = User.Identity.GetUserName();
-					Model.SendDate = DateTime.Now;
-					_db.Mails.Add(Model);
-					_db.SaveChanges();
-					return RedirectToAction("index");
+					string userFrom = User.Identity.GetUserName();
+					if (_db.Blocks.Where(w => w.Who == to && w.Whom == userFrom).Count() == 0)
+					{
+						Model.From = userFrom;
+						Model.SendDate = DateTime.Now;
+						Model.To = to;
+						_db.Mails.Add(Model);
+						_db.SaveChanges();
+						return RedirectToAction("index");
+					}
+					else
+					{
+						ViewData["Error"] = "This user is blocked you";
+						return View(Model);
+					}
 				}
 				else
 				{
@@ -68,7 +84,7 @@ namespace demo.Controllers
 
 		public JsonResult MarkMailToUnreaded(int id)
 		{
-			var user = User.Identity.GetUserName(); 
+			var user = User.Identity.GetUserName();
 
 			var model = _db.Mails.Find(id);
 
@@ -104,7 +120,7 @@ namespace demo.Controllers
 		public ActionResult SentMails()
 		{
 			string username = User.Identity.GetUserName();
-			var model = _db.Mails.Where(w => w.From == username).ToList();
+			var model = _db.Mails.Where(w => w.From == username).OrderByDescending(o => o.SendDate).ToList();
 			return View(model);
 		}
 
@@ -121,11 +137,81 @@ namespace demo.Controllers
 		{
 			var userContext = new ApplicationDbContext();
 			var AppUser = userContext.Users.Where(w => w.UserName == LogedInUsername).FirstOrDefault();
-			if(AppUser != null)
+			if (AppUser != null)
 			{
 				AppUser.Hidden = !AppUser.Hidden;
 				userContext.SaveChanges();
 
+				return new JsonResult()
+				{
+					Data = new { status = "success" }
+				};
+			}
+			return new JsonResult()
+			{
+				Data = new { status = "error" }
+			};
+		}
+
+		public ActionResult InboxListPartial()
+		{
+			String username = User.Identity.GetUserName();
+			var model = _db.Mails.Where(w => w.To == username).OrderByDescending(o => o.SendDate).ToList();
+			return PartialView(model);
+		}
+
+		public JsonResult BlockUserByName(string name)
+		{
+			string actualuser = User.Identity.GetUserName();
+			string userToBlock = "";
+			int firstBrace = name.IndexOf("(");
+			int lastBrace = name.IndexOf(")");
+
+			if (firstBrace != -1 && lastBrace != -1)
+			{
+				userToBlock = name.Substring(firstBrace + 1, lastBrace - firstBrace - 1);
+				if (_db.Blocks.Where(w => w.Who == actualuser && w.Whom == userToBlock).Count() == 0)
+				{
+					var newBlock = new Block()
+					{
+						Who = actualuser,
+						Whom = userToBlock
+					};
+					_db.Blocks.Add(newBlock);
+					_db.SaveChanges();
+
+				}
+				else
+				{
+					return new JsonResult()
+					{
+						Data = new { status = "allreadyBlocked" }
+					};
+				}
+				return new JsonResult()
+				{
+					Data = new { status = "success" }
+				};
+			}
+			return new JsonResult()
+			{
+				Data = new { status = "error" }
+			};
+		}
+
+		public JsonResult UnBlockUser(string name)
+		{
+			string actualuser = User.Identity.GetUserName();
+			string userToUnBlock = "";
+			int firstBrace = name.IndexOf("(");
+			int lastBrace = name.IndexOf(")");
+
+			if (firstBrace != -1 && lastBrace != -1)
+			{
+				userToUnBlock = name.Substring(firstBrace + 1, lastBrace - firstBrace - 1);
+				var items = _db.Blocks.Where(w => w.Who == actualuser && w.Whom == userToUnBlock);
+				_db.Blocks.RemoveRange(items);
+				_db.SaveChanges();
 				return new JsonResult()
 				{
 					Data = new { status = "success" }

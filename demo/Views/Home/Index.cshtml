@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<demo.Models.Message>
-@using demo.Models;
+@using demo.Models
+@using Microsoft.AspNet.Identity
 
 @{ 
 	ViewBag.Title = "Inbox";
@@ -14,29 +15,6 @@
 			<input type="text" name="search" id="search_mail_list" placeholder="Search inbox">
 		</div>
 		<div class="inbox_list scrollbar-macosx">
-			@if (Model.Count() == 0)
-			{
-				<center><i><br />No messages yet :(</i></center>
-			}
-			@foreach (var item in Model)
-			{
-				<div data-message_id="@item.Id" class='message col-md-12 @(!item.IsReaded ? "unreaded": "" )'>
-				<div class="message_select">
-					<input type="checkbox" name="">
-				</div>
-				<div class="message_details">
-					<h3>
-						@{
-							ApplicationUser sender = @users.Where(w => w.UserName == item.From).FirstOrDefault();
-						}
-						@sender.FullName
-						<span class="pull-right">@item.SendDate</span>
-					</h3>
-					<p><b>@item.Title</b> &nbsp;@item.Body</p>
-				</div>
-
-				</div>
-			}
 			
 		</div>
 	</div>
@@ -69,4 +47,14 @@
 				}
 			})
 		});
+</script>
+<script>
+	var urlToDetails = '@Url.Action("InboxListPartial", "Home")';
+	function reload() {
+		$('.inbox_list').load(urlToDetails, {}, function (response, status) {
+			if (status = "success") console.log("success");
+		});
+	}
+	reload();
+	setInterval(reload, 30000);
 </script>

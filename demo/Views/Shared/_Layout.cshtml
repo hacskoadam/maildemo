@@ -1,12 +1,23 @@
 ﻿@using demo.Models;
 @using Microsoft.AspNet.Identity;
+
+@{ 
+	var usersAvailable = (List<ApplicationUser>)ViewData["Users"];
+	List<string> availableUserNames = null;
+	if (usersAvailable != null)
+	{
+		availableUserNames = new List<string>();
+		availableUserNames = usersAvailable.Where(w => w.UserName != User.Identity.GetUserName()).Select(s => s.FullName + " (" + s.UserName + ")").ToList();
+	}
+}
+
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>@ViewBag.Title - Simple mail</title>
-	@Styles.Render("~/Content/css")
+	@Styles.Render("~/Content/allcss")
 	@Styles.Render("~/Content/font-awesome")
 
 </head>
@@ -29,8 +40,10 @@
 		</div>
 	</div>
 	<div class="sidebar active">
+		@Html.Partial("_LoginPartialSidebar")
 		<ul>
 			<li><a href="#" id="user_settings_button"><i class="fa fa-user"></i><span>Profile</span></a></li>
+			<li><a href="@Url.Action("SendMail", "Home")" id="user_settings_button"><i class="fa fa-plus"></i><span>Compose</span></a></li>
 		</ul>
 		<ul>
 			<li><a href="@Url.Action("index", "Home")"><i class="fa fa-envelope"></i><span>Inbox</span></a></li>
@@ -82,13 +95,27 @@
 					if (curent_user != null)
 					{
 						var hidden = curent_user.Hidden;
-					<label>
-						<input type="checkbox" value="1" class="hide_user_checkbox"  @(!hidden ? "checked" : "") />
-						&nbsp;Visible for other users
-					</label>
+						<label>
+							<input type="checkbox" value="1" class="hide_user_checkbox"  @(!hidden ? "checked" : "") />
+							&nbsp;Visible for other users
+						</label>
+					}
+				}
+			}
+			<h3>Blocked users</h3>
+			<input type="text" placeholder="Block user by name" id="blockNewuserInput"/>
+			<ul id="blockkedUsers">
+				@{ 
+					if(ViewData["blockedUsers"] != null)
+					{
+						foreach(var banneduser in (List<string>)ViewData["blockedUsers"])
+						{
+							<li class="unblockUserLink"><i title="unblock" class="fa fa-close"></i> &nbsp;@banneduser</li>
 						}
 					}
 				}
+
+			</ul>
 		</div>
 </div>
 
@@ -139,37 +166,85 @@
 	</script>
 
 	<script type="text/javascript">
-			$('#menu-action').click(function() {
-				$('.sidebar').toggleClass('active');
-				$('.main').toggleClass('active');
-				$(this).toggleClass('active');
+		$('#menu-action').click(function() {
+			$('.sidebar').toggleClass('active');
+			$('.main').toggleClass('active');
+			$(this).toggleClass('active');
 
-				if ($('.sidebar').hasClass('active')) {
-					$(this).find('i').addClass('fa-close');
-					$(this).find('i').removeClass('fa-bars');
+			if ($('.sidebar').hasClass('active')) {
+				$(this).find('i').addClass('fa-close');
+				$(this).find('i').removeClass('fa-bars');
 
-					var w = parseInt($(".open_mail").css("width")) - 248;
-				} else {
-					$(this).find('i').addClass('fa-bars');
-					$(this).find('i').removeClass('fa-close');
+				var w = parseInt($(".open_mail").css("width")) - 248;
+			} else {
+				$(this).find('i').addClass('fa-bars');
+				$(this).find('i').removeClass('fa-close');
 
-					var w = parseInt($(".open_mail").css("width")) + 248;
+				var w = parseInt($(".open_mail").css("width")) + 248;
+			}
+			$(".open_mail").animate({"width": w+"px"}, "400");
+		});
+	</script>
+	<script type="text/javascript">
+		$("a.open_mail_back_link").click(function(){
+			$(".inbox_col").css("z-index", "2");
+		});
+		$(".message").click(function(){
+			$(".inbox_col").css("z-index", "0");
+		})
+	</script>
+	<script type="text/javascript">
+	    jQuery(document).ready(function(){
+	        jQuery('.scrollbar-macosx').scrollbar();
+	    });
+	</script>
+	<script>
+	var bannusers = @Html.Raw(Json.Encode(availableUserNames));
+	var urlToBlock = '@Url.Action("BlockUserByName", "Home")';
+		$("#blockNewuserInput").autocomplete({
+			source: bannusers,
+			select: function (event, ui) {
+				$.ajax({
+					url: urlToBlock,
+					method: "POST",
+					data: { name : ui.item.label},
+					success: function (result) {
+						if (result.status == "error") {
+							$.notify("Can not block user", "error");
+						}
+						else if (result.status == "allreadyBlocked") {
+							$.notify("User already blocked", "")
+						}
+						else{
+							$("#blockNewuserInput").val("");
+							$("ul#blockkedUsers").append("<li class='unblockUserLink'><i title='unblock' class='fa fa- close'></i> &nbsp;" + ui.item.label + "</li>");
+						}
+					}
+				});
+			}
+	});
+	</script>
+
+	<script>
+
+	var urlToUnBlock = '@Url.Action("UnBlockUser", "Home")';
+		$(".unblockUserLink").click(function () {
+			var that = this;
+			$.ajax({
+				url: urlToUnBlock,
+				method: "POST",
+				data: { name: $(this).text().trim() },
+				success: function (result) {
+					if (result.status == "error") {
+						$.notify("Can not unblock user", "error");
+					}
+
+					else {
+						$(that).remove();
+					}
 				}
-				$(".open_mail").animate({"width": w+"px"}, "400");
 			});
-	</script>
-	<script type="text/javascript">
-			$("a.open_mail_back_link").click(function(){
-				$(".inbox_col").css("z-index", "2");
-			});
-			$(".message").click(function(){
-				$(".inbox_col").css("z-index", "0");
-			})
-	</script>
-	<script type="text/javascript">
-	            jQuery(document).ready(function(){
-	                jQuery('.scrollbar-macosx').scrollbar();
-	            });
+		});
 	</script>
 </body>
 </html>

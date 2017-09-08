@@ -374,12 +374,14 @@ a.open_mail_back_link{
 	line-height: 20px;
 }
 
+
+#blockNewuserInput,
 .sidebar ul.user_list_filter li span input::placeholder {
 	color: #fff;
-	font-style:italic;
+	font-style: italic;
 }
 
-
+#blockNewuserInput ,
 .sidebar ul.user_list_filter li span input {
 	height: 40px;
 	padding: 12px 0px 4px 0px;
@@ -400,7 +402,8 @@ a.open_mail_back_link{
 	background-color: transparent;
 	padding-left:15px;
 }
-.sidebar ul.user_list_filter li span input ,
+#blockNewuserInput ,
+.sidebar ul.user_list_filter li span input,
 .send_mail_input:focus {
 	outline: none;
 }
@@ -429,4 +432,11 @@ p#close_user_settings{
 	text-align: center;
 	color: #fff;
 	cursor:pointer;
+}
+.unblockUserLink{
+	cursor:pointer;
+	list-style-type:none;
+}
+ul#blockkedUsers{
+	padding-left:0px;
 }

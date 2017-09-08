@@ -1,8 +1,12 @@
 ﻿@model demo.Models.Message
+@using demo.Models
 
 @{
 	ViewBag.Title = "Compose";
+	var users = (List<ApplicationUser>)ViewData["Users"];
+	var userNames = users.Select(s => s.FullName + " (" + s.UserName + ")").ToList() ;
 }
+
 
 @using (Html.BeginForm())
 {
@@ -14,7 +18,7 @@
 				@Html.LabelFor(model => model.To, htmlAttributes: new { @class = "control-label" }): 
 				@if (ViewData["MailTo"] != null)
 				{
-					@Html.TextBoxFor(model => model.To, new { @Value = ViewData["MailTo"], @class = "send_mail_input", @readonly = "readonly" })
+					@Html.TextBoxFor(model => model.To, new { @Value = ViewData["MailTo"], @class = "send_mail_input" })
 
 				} else
 				{
@@ -38,3 +42,10 @@
 			@:<script>$.notify('@ViewData["Error"]', 'error');</script>
 		}
 }
+<script>
+	var AvailableUsers = @Html.Raw(Json.Encode(userNames))
+
+	$("#To.send_mail_input").autocomplete({
+			source: AvailableUsers
+	});
+</script>

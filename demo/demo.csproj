@@ -296,6 +296,8 @@
     <Content Include="Views\Shared\DisplayMailDetails.cshtml" />
     <Content Include="Views\Home\SentMails.cshtml" />
     <Content Include="Views\Home\DisplayOwnMailDetails.cshtml" />
+    <Content Include="Views\Shared\_LoginPartialSidebar.cshtml" />
+    <Content Include="Views\Home\InboxListPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

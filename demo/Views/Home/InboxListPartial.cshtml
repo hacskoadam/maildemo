@@ -1,0 +1,30 @@
+﻿@model IEnumerable<demo.Models.Message>
+@using demo.Models;
+
+@{
+	var users = (List<ApplicationUser>)ViewData["AllUsers"];
+}
+
+@if (Model.Count() == 0)
+{
+	<center><i><br />No messages yet :(</i></center>
+}
+@foreach (var item in Model)
+{
+	<div data-message_id="@item.Id" class='message col-md-12 @(!item.IsReaded ? "unreaded": "" )'>
+		<div class="message_select">
+			<input type="checkbox" name="">
+		</div>
+		<div class="message_details">
+			<h3>
+				@{
+					ApplicationUser sender = @users.Where(w => w.UserName == item.From).FirstOrDefault();
+				}
+				@sender.FullName
+				<span class="pull-right">@item.SendDate</span>
+			</h3>
+			<p><b>@item.Title</b> &nbsp;@item.Body</p>
+		</div>
+
+	</div>
+}

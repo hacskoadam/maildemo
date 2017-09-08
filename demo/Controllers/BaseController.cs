@@ -23,7 +23,8 @@ namespace demo.Controllers
 			// Now you can access the HttpContext and User
 			var userContext = new ApplicationDbContext();
 			ViewData["Users"] = userContext.Users.Where(w => w.Hidden == false).ToList();
-			ViewData["AllUsers"] = userContext.Users.ToList();
+			var Allusers = userContext.Users.ToList();
+			ViewData["AllUsers"] = Allusers;
 
 			if (User.Identity.IsAuthenticated)
 			{
@@ -34,6 +35,14 @@ namespace demo.Controllers
 
 				Leftmails = MaxMails - usedToday;
 				ViewData["leftmailsCount"] = Leftmails;
+				
+				var blockedusers = _db.Blocks.Where(w => w.Who == LogedInUsername).Select(s => s.Whom).ToList();
+				List<string> BlockedUserNames = new List<string>();
+				foreach(var item in blockedusers)
+				{
+					BlockedUserNames.Add(Allusers.Where(w => w.UserName == item).Select(s => s.FullName + " (" + s.UserName + ")").FirstOrDefault());
+				}
+				ViewData["blockedUsers"] = BlockedUserNames;
 			}
 		}
 
